@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <title>Champignon</title>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #pad {
+            width: 90%;
+            height: 50%;
+            background-color: rgb(34, 255, 0);
+        }
+    </style>
+</head>
+<body>
+    Champignon
+    <div ontouchmove="move(event);" ontouchend="endMove();" onClick="onClick();" id="pad"></div>
+    <div id="output"></div>
+    <button onclick="teste()"></button>
+    <script>
+        const baseURL = "http://##URL##";
+
+        const socket = new WebSocket("ws://##URL##/control");
+
+        // // Listen for messages
+        // socket.addEventListener("message", (event) => {
+        //     console.log("Message from server ", event.data);
+        // });
+
+        const lastPosition = {
+            x: 0,
+            y: 0
+        }
+
+        function onClick() {
+            const data = {
+                oper: "click",
+            }
+            socket.send(JSON.stringify(data));
+        }
+
+        function endMove() {
+            lastPosition.x = 0;
+            lastPosition.y = 0;
+        }
+
+        function move(e) {
+            const rect = pad.getBoundingClientRect(); 
+            x = e.touches[0].clientX - rect.left;
+            y = e.touches[0].clientY - rect.top;
+            if (lastPosition.x === 0 && lastPosition.y === 0) {
+                lastPosition.x = x;
+                lastPosition.y = y;
+                return;
+            }
+            const pixels = 0.1;
+            if (x - lastPosition.x > pixels || x - lastPosition.x < -pixels || y - lastPosition.y > pixels || y - lastPosition.y < -pixels) {
+                const data = {
+                    oper: "move",
+                    data: {
+                        x: x - lastPosition.x,
+                        y: y - lastPosition.y
+                    }
+                }
+                lastPosition.x = x;
+                lastPosition.y = y;
+                socket.send(JSON.stringify(data));
+            }
+        }
+
+        // const output = document.getElementById("output");
+        // const pad = document.getElementById("pad");
+        // pad.addEventListener("mousemove", (e) => {
+        //     const rect = pad.getBoundingClientRect(); 
+        //     const xPos = e.clientX - rect.left;
+        //     const yPos = e.clientY - rect.top;
+        //     output.innerHTML = `<div><span>X: </span>${xPos}px</div><div><span>Y: </span>${yPos}px</div>`;
+        // });
+    </script>
+</body>
+</html>
