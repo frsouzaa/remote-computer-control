@@ -10,16 +10,33 @@ class Control():
     def handle_request(self, input: Any) -> Tuple[Dict[str, any], int]:
         input = json.loads(input)
         print(input)
-        if input.get("oper") == "move":
+        oper: Dict[str, any] = input.get("oper")
+        data: Dict[str, any] = input.get("data")
+        if oper == "move":
             try:
-                mouse.move(input.get("data").get("x") * 8, input.get("data").get("y") * 8, absolute=False)
-                return {"msg": "Sucesso"}, 200
+                mouse.move(data.get("x") * 6, data.get("y") * 6, absolute=False)
+                return {"status": 200, "msg": "Sucesso"}
             except Exception as e:
-                return {"msg": "Erro"}, 500
+                return {"status": 500, "msg": "Erro"}
         
-        if input.get("oper") == "click":
+        if oper == "click":
             try:
-                pyautogui.click()
-                return {"msg": "Sucesso"}, 200
+                pyautogui.click(button="right" if data.get("side") == "r" else "left")
+                return {"status": 200, "msg": "Sucesso"}
             except Exception as e:
-                return {"msg": "Erro"}, 500
+                return {"status": 500, "msg": "Erro"}
+        
+        if oper == "mouse_down":
+            try:
+                pyautogui.mouseDown()
+                return {"status": 200, "msg": "Sucesso"}
+            except Exception as e:
+                return {"status": 500, "msg": "Erro"}
+            
+        if oper == "mouse_up":
+            try:
+                pyautogui.mouseUp()
+                return {"status": 200, "msg": "Sucesso"}
+            except Exception as e:
+                return {"status": 500, "msg": "Erro"}
+        
