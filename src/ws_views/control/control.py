@@ -9,7 +9,6 @@ class Control():
 
     def handle_request(self, input: Any) -> Tuple[Dict[str, any], int]:
         input = json.loads(input)
-        print(input)
         oper: Dict[str, any] = input.get("oper")
         data: Dict[str, any] = input.get("data")
         if oper == "move":
@@ -39,4 +38,12 @@ class Control():
                 return {"status": 200, "msg": "Sucesso"}
             except Exception as e:
                 return {"status": 500, "msg": "Erro"}
+
+        if oper == "scroll":
+            try:
+                pyautogui.scroll(-1 if data.get("y") > 0 else 1)
+                return {"status": 200, "msg": "Sucesso"}
+            except Exception as e:
+                return {"status": 500, "msg": "Erro"}
+        
         
