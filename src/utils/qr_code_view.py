@@ -8,6 +8,7 @@ import os
 
 
 class QRCodeDisplay():
+    
 
     def show(self):
         url: str = self.get_url()
