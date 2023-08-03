@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from src.views.views_list import View_List
-from src.utils.qr_code_view import QRCode
+from src.utils.qr_code_view import QRCodeDisplay
 from src.ws_views.control.control import Control
 from flask_sock import Sock
 from dotenv import load_dotenv
@@ -36,5 +36,10 @@ class App():
 
 if __name__ == "__main__":
     load_dotenv()
-    QRCode().show(getenv("PORT"))
+    QRCodeDisplay().show()
     App()
+
+
+# import PySimpleGUI as sg
+  
+# sg.theme_previewer()
