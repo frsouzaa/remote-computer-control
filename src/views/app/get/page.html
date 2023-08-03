@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no" />
-    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,##ICON##">
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="data:image/png;base64,##ICON##"
+    />
     <title>Control</title>
     <style>
       * {
@@ -20,14 +24,37 @@
         background-color: #000201;
       }
 
+      #title-div {
+        width: 100%;
+        height: 10%;
+        display: flex;
+      }
+
       #container {
         width: 100%;
-        height: 100%;
+        height: 90%;
         display: flex;
+      }
+
+      #keyboard {
+        width: 100%;
+        height: 45%;
+      }
+
+      #touchpad {
+        width: 100%;
+        height: 45%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
 
       #main {
         width: 85%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: space-between; */
       }
 
       #scroll-container {
@@ -43,20 +70,21 @@
         margin: 1em 0;
       }
 
-      #touchpad {
+      #pad-div {
         width: 100%;
-        height: 13em;
+        height: 75%;
       }
 
       #left-right {
         width: 100%;
+        height: 20%;
         justify-content: space-between;
       }
 
       #left,
       #right {
         width: 42%;
-        height: 4em;
+        height: 100%;
         background-color: #222423;
         border-radius: 2em;
       }
@@ -69,8 +97,8 @@
       }
 
       #scroll {
-        height: 70%;
-        width: 90%;
+        height: 90%;
+        width: 80%;
         background-color: #222423;
         border-radius: 2em;
       }
@@ -82,28 +110,33 @@
     </style>
   </head>
   <body>
-    <div class="center-child-h">
+    <div id="title-div" class="center-child-h">
       <h2 id="title">Remote Computer Control</h2>
     </div>
     <div id="container">
       <div id="main">
-        <div id="touchpad" class="center-child-h">
-          <div
-            id="pad"
-            class="center"
-            ontouchmove="move(event);"
-            ontouchend="endMove();"
-            onClick="onClick('l');"
-          ></div>
+        <div id="keyboard"></div>
+        <div id="touchpad">
+          <div id="pad-div" class="center-child-h">
+            <div
+              id="pad"
+              class="center"
+              ontouchmove="move(event);"
+              ontouchend="endMove();"
+              onClick="onClick('l');"
+            ></div>
+          </div>
+          <div id="left-right" class="center-child-h">
+            <div></div>
+            <div
+              id="left"
+              ontouchstart="press();"
+              ontouchend="release();"
+            ></div>
+            <div id="right" onClick="onClick('r');"></div>
+            <div></div>
+          </div>
         </div>
-        <br />
-        <div id="left-right" class="center-child-h">
-          <div></div>
-          <div id="left" ontouchstart="press();" ontouchend="release();"></div>
-          <div id="right" onClick="onClick('r');"></div>
-          <div></div>
-        </div>
-        <div id="output"></div>
       </div>
       <div id="scroll-container">
         <div
@@ -113,6 +146,7 @@
         ></div>
       </div>
     </div>
+    <!-- <div id="output"></div> -->
     <script>
       const output = document.getElementById("output");
       const baseURL = "http://##URL##";
@@ -183,7 +217,7 @@
       }
 
       function handleScroll(event) {
-        const el = document.getElementById("scroll")
+        const el = document.getElementById("scroll");
         const rect = el.getBoundingClientRect();
         const len = event.touches.length;
         const y = event.touches[len - 1].clientY;
