@@ -36,7 +36,7 @@
         display: flex;
       }
 
-      #keyboard {
+      #keyboard-div {
         width: 100%;
         height: 45%;
       }
@@ -85,42 +85,65 @@
       #right {
         width: 42%;
         height: 100%;
-        background-color: #222423;
-        border-radius: 2em;
       }
 
       #pad {
         width: 90%;
         height: 100%;
-        background-color: #222423;
-        border-radius: 2em;
       }
 
       #scroll {
         height: 90%;
         width: 80%;
-        background-color: #222423;
-        border-radius: 2em;
+      }
+
+      #keyboard {
+        width: 90%;
+        height: 4em;
+      }
+
+      #keyboard:focus {
+        outline: none;
+        border-color: #bebcbb;
       }
 
       .center-child-h {
         display: flex;
         justify-content: center;
       }
+
+      .center-child-v {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      .element {
+        border: solid;
+        border-radius: 2em;
+        border-bottom-color: #7c7b7a;
+        border-right-color: #7c7b7a;
+        background-color: #222423;
+      }
     </style>
   </head>
   <body>
+    <div id="output" style="color: red;"></div>
     <div id="title-div" class="center-child-h">
       <h2 id="title">Remote Computer Control</h2>
     </div>
     <div id="container">
       <div id="main">
-        <div id="keyboard"></div>
+        <div id="keyboard-div" class="center-child-v">
+          <div class="center-child-h">
+            <input id="keyboard" class="element" type="text" onkeypress="return sendkey(event);" />
+          </div>
+        </div>
         <div id="touchpad">
           <div id="pad-div" class="center-child-h">
             <div
               id="pad"
-              class="center"
+              class="center element"
               ontouchmove="move(event);"
               ontouchend="endMove();"
               onClick="onClick('l');"
@@ -130,10 +153,11 @@
             <div></div>
             <div
               id="left"
+              class="element"
               ontouchstart="press();"
               ontouchend="release();"
             ></div>
-            <div id="right" onClick="onClick('r');"></div>
+            <div id="right" class="element" onClick="onClick('r');"></div>
             <div></div>
           </div>
         </div>
@@ -141,12 +165,12 @@
       <div id="scroll-container">
         <div
           id="scroll"
+          class="element"
           ontouchmove="handleScroll(event);"
           ontouchend="endMove();"
         ></div>
       </div>
     </div>
-    <!-- <div id="output"></div> -->
     <script>
       const output = document.getElementById("output");
       const baseURL = "http://##URL##";
@@ -162,6 +186,19 @@
         x: 0,
         y: 0,
       };
+
+      function sendkey(event) {
+        const data = {
+          oper: "key",
+          data: {
+            key: event.key,
+          },
+        };
+        socket.send(JSON.stringify(data));
+        output.innerHTML = event;
+        console.log(event);
+        return false;
+      }
 
       function onClick(side) {
         const data = {
