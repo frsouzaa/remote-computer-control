@@ -20,7 +20,7 @@
       body {
         width: 100vw;
         height: 100vh;
-        overflow: hidden;
+        overflow-x: hidden;
         background-color: #000201;
       }
 
@@ -47,6 +47,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        overscroll-behavior: contain;
       }
 
       #main {
@@ -100,11 +101,14 @@
       #keyboard {
         width: 90%;
         height: 4em;
+        text-align: center;
+        caret-color: transparent;
       }
 
       #keyboard:focus {
         outline: none;
-        border-color: #bebcbb;
+        border-top-color: transparent;
+        border-left-color: transparent;
       }
 
       .center-child-h {
@@ -119,16 +123,20 @@
       }
 
       .element {
-        border: solid;
+        border: solid 0.1em;
         border-radius: 2em;
-        border-bottom-color: #7c7b7a;
-        border-right-color: #7c7b7a;
+        border-color: #171918;
         background-color: #222423;
+      }
+
+      .label {
+        color: #525150;
+        font-size: 1.2rem;
       }
     </style>
   </head>
   <body>
-    <div id="output" style="color: red;"></div>
+    <div id="output" style="color: red"></div>
     <div id="title-div" class="center-child-h">
       <h2 id="title">Remote Computer Control</h2>
     </div>
@@ -136,28 +144,50 @@
       <div id="main">
         <div id="keyboard-div" class="center-child-v">
           <div class="center-child-h">
-            <input id="keyboard" class="element" type="text" onkeypress="return sendkey(event);" />
+            <input
+              id="keyboard"
+              class="element label"
+              type="text"
+              onkeydown="sendkeys(event);"
+              value="KEYBOARD"
+            />
           </div>
         </div>
         <div id="touchpad">
           <div id="pad-div" class="center-child-h">
             <div
               id="pad"
-              class="center element"
+              class="element center-child-v"
               ontouchmove="move(event);"
               ontouchend="endMove();"
               onClick="onClick('l');"
-            ></div>
+            >
+              <div class="center-child-h">
+                <span class="label">TOUCHPAD</span>
+              </div>
+            </div>
           </div>
           <div id="left-right" class="center-child-h">
             <div></div>
             <div
               id="left"
-              class="element"
+              class="element center-child-v"
               ontouchstart="press();"
               ontouchend="release();"
-            ></div>
-            <div id="right" class="element" onClick="onClick('r');"></div>
+            >
+              <div class="center-child-h">
+                <span class="label">LEFT</span>
+              </div>
+            </div>
+            <div
+              id="right"
+              class="element center-child-v"
+              onClick="onClick('r');"
+            >
+              <div class="center-child-h">
+                <span class="label">RIGHT</span>
+              </div>
+            </div>
             <div></div>
           </div>
         </div>
@@ -187,7 +217,8 @@
         y: 0,
       };
 
-      function sendkey(event) {
+      function sendkeys(event) {
+        event.preventDefault();
         const data = {
           oper: "key",
           data: {
@@ -196,8 +227,7 @@
         };
         socket.send(JSON.stringify(data));
         output.innerHTML = event;
-        console.log(event);
-        return false;
+        // return false;
       }
 
       function onClick(side) {
@@ -216,6 +246,8 @@
       }
 
       function move(event) {
+        event.preventDefault();
+
         const rect = pad.getBoundingClientRect();
         const len = event.touches.length;
         const x = event.touches[len - 1].clientX;
@@ -254,6 +286,8 @@
       }
 
       function handleScroll(event) {
+        event.preventDefault();
+
         const el = document.getElementById("scroll");
         const rect = el.getBoundingClientRect();
         const len = event.touches.length;
