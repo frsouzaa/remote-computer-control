@@ -2,6 +2,7 @@ from typing import Tuple, Dict, Any
 import mouse
 import pyautogui
 import json
+import keyboard
 
 
 class Control():
@@ -13,7 +14,7 @@ class Control():
         data: Dict[str, any] = input.get("data")
         if oper == "move":
             try:
-                mouse.move(data.get("x") * 6, data.get("y") * 6, absolute=False)
+                mouse.move(data.get("x") * 4, data.get("y") * 4, absolute=False)
                 return {"status": 200, "msg": "Sucesso"}
             except Exception as e:
                 return {"status": 500, "msg": "Erro"}
@@ -42,6 +43,13 @@ class Control():
         if oper == "scroll":
             try:
                 pyautogui.scroll(-1 if data.get("y") > 0 else 1)
+                return {"status": 200, "msg": "Sucesso"}
+            except Exception as e:
+                return {"status": 500, "msg": "Erro"}
+            
+        if oper == "key":
+            try:
+                keyboard.press_and_release(data.get("key"))
                 return {"status": 200, "msg": "Sucesso"}
             except Exception as e:
                 return {"status": 500, "msg": "Erro"}

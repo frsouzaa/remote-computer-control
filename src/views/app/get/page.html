@@ -9,6 +9,7 @@
       href="data:image/png;base64,##ICON##"
     />
     <title>Control</title>
+    <script src="https://kit.fontawesome.com/07a4cfc957.js" crossorigin="anonymous"></script>
     <style>
       * {
         font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
@@ -32,7 +33,7 @@
 
       #container {
         width: 100%;
-        height: 90%;
+        height: 80%;
         display: flex;
       }
 
@@ -63,6 +64,20 @@
         width: 15%;
         display: flex;
         justify-content: center;
+      }
+
+      #footer {
+        width: 100%;
+        height: 20%;
+        background-color: #222423;
+      }
+
+      #footer-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        padding: 0 1rem;
       }
 
       #title,
@@ -96,6 +111,10 @@
       #scroll {
         height: 90%;
         width: 80%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
 
       #keyboard {
@@ -103,6 +122,10 @@
         height: 4em;
         text-align: center;
         caret-color: transparent;
+      }
+
+      #keyboard::placeholder {
+        color: #525150;
       }
 
       #keyboard:focus {
@@ -133,6 +156,19 @@
         color: #525150;
         font-size: 1.2rem;
       }
+
+      .link {
+        display: flex;
+        align-items: center;
+        color: #525150;
+        gap: 1rem;
+        text-decoration: none;
+        font-size: 1.2rem;
+      }
+
+      .rotate {
+        transform: rotate(-90deg)
+      }
     </style>
   </head>
   <body>
@@ -148,8 +184,9 @@
               id="keyboard"
               class="element label"
               type="text"
-              onkeydown="sendkeys(event);"
-              value="KEYBOARD"
+              onchange="fomatKeyboard();"
+              oninput="sendkeys(event);"
+              placeholder="KEYBOARD"
             />
           </div>
         </div>
@@ -198,7 +235,21 @@
           class="element"
           ontouchmove="handleScroll(event);"
           ontouchend="endMove();"
-        ></div>
+        >
+        <span class="label rotate">SCROLL</span>
+      </div>
+      </div>
+    </div>
+    <div id="footer">
+      <div id="footer-content">
+        <a class="link" href="https://github.com/frsouzaa" target="_blank" rel="noopener noreferrer">
+          <i class="fa-brands fa-github fa-2xl" style="color: #525150;"></i>
+          <p>github.com/frsouzaa</p>
+        </a>
+        <a class="link" href="https://www.linkedin.com/in/frs15/" target="_blank" rel="noopener noreferrer">
+          <i class="fa-brands fa-linkedin-in fa-2xl" style="color: #525150;"></i>
+          <p>linkedin.com/in/frs15/</p>
+        </a>
       </div>
     </div>
     <script>
@@ -217,17 +268,25 @@
         y: 0,
       };
 
+      function teste(event) {
+        output.innerHTML = event;
+        return false;
+      }
+
       function sendkeys(event) {
-        event.preventDefault();
+        fomatKeyboard();
         const data = {
           oper: "key",
           data: {
-            key: event.key,
+            key: event.data,
           },
         };
         socket.send(JSON.stringify(data));
-        output.innerHTML = event;
-        // return false;
+      }
+      
+      function fomatKeyboard() {
+        const keyboard = document.getElementById("keyboard");
+        keyboard.value = "";
       }
 
       function onClick(side) {
@@ -265,7 +324,7 @@
           lastPosition.y = y;
           return;
         }
-        const pixels = 0.1;
+        const pixels = 2;
         if (
           x - lastPosition.x > pixels ||
           x - lastPosition.x < -pixels ||
@@ -299,7 +358,7 @@
           lastPosition.y = y;
           return;
         }
-        const pixels = 25;
+        const pixels = 30;
         if (y - lastPosition.y > pixels || y - lastPosition.y < -pixels) {
           const data = {
             oper: "scroll",
