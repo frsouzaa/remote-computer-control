@@ -42,7 +42,7 @@ class Control():
 
         if oper == "scroll":
             try:
-                pyautogui.scroll(-1 if data.get("y") > 0 else 1)
+                pyautogui.scroll(-5 if data.get("y") > 0 else 5)
                 return {"status": 200, "msg": "Sucesso"}
             except Exception as e:
                 return {"status": 500, "msg": "Erro"}

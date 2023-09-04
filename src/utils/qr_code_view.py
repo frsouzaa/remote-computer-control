@@ -27,7 +27,7 @@ class QRCodeDisplay():
             [sg.Image(qr, expand_x=True, expand_y=True)],
         ]
         window = sg.Window(
-            'Champignon', layout, icon=f"{os.getcwd()}/src/assets/logo.png", size=(450, 450), element_justification='c')
+            'Champignon', layout, icon=f"{os.getcwd()}/src/assets/logo.png", size=(600, 600), element_justification='c')
         window.read()
 
 

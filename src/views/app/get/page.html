@@ -8,8 +8,11 @@
       type="image/png"
       href="data:image/png;base64,##ICON##"
     />
-    <title>Control</title>
-    <script src="https://kit.fontawesome.com/07a4cfc957.js" crossorigin="anonymous"></script>
+    <title>Remote PC Control</title>
+    <script
+      src="https://kit.fontawesome.com/07a4cfc957.js"
+      crossorigin="anonymous"
+    ></script>
     <style>
       * {
         font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
@@ -29,6 +32,7 @@
         width: 100%;
         height: 10%;
         display: flex;
+        margin-bottom: 1.5rem;
       }
 
       #container {
@@ -39,7 +43,24 @@
 
       #keyboard-div {
         width: 100%;
-        height: 45%;
+        height: 15%;
+      }
+
+      #arrows-div {
+        width: 100%;
+        height: 30%;
+      }
+
+      #keyboard-icon-div {
+        position: relative;
+        width: 90%;
+      }
+
+      #keyboard-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
 
       #touchpad {
@@ -118,10 +139,11 @@
       }
 
       #keyboard {
-        width: 90%;
+        width: 100%;
         height: 4em;
         text-align: center;
         caret-color: transparent;
+        border: none;
       }
 
       #keyboard::placeholder {
@@ -148,7 +170,6 @@
       .element {
         border: solid 0.1em;
         border-radius: 2em;
-        border-color: #171918;
         background-color: #222423;
       }
 
@@ -166,28 +187,104 @@
         font-size: 1.2rem;
       }
 
-      .rotate {
-        transform: rotate(-90deg)
+      .arrow-row {
+        width: 100%;
+        height: 50%;
+        display: flex;
+        justify-content: space-around;
+      }
+
+      .arrow {
+        height: 90%;
+        width: 25%;
       }
     </style>
   </head>
   <body>
     <div id="output" style="color: red"></div>
     <div id="title-div" class="center-child-h">
-      <h2 id="title">Remote Computer Control</h2>
+      <h1 id="title">Remote PC Control</h1>
     </div>
     <div id="container">
       <div id="main">
         <div id="keyboard-div" class="center-child-v">
           <div class="center-child-h">
-            <input
-              id="keyboard"
-              class="element label"
-              type="text"
-              onchange="fomatKeyboard();"
-              oninput="sendkeys(event);"
-              placeholder="KEYBOARD"
-            />
+            <div id="keyboard-icon-div">
+              <span id="keyboard-icon" class="label">
+                <i class="fa-regular fa-keyboard fa-xl"></i>
+              </span>
+              <input
+                id="keyboard"
+                class="element label"
+                type="text"
+                onchange="fomatKeyboard();"
+                oninput="sendkeys(event);"
+              />
+            </div>
+          </div>
+        </div>
+        <div id="arrows-div">
+          <div class="arrow-row">
+            <div
+              class="arrow element center-child-v"
+              onClick="sendArrows('backspace');"
+            >
+              <div class="center-child-h">
+                <span class="label"
+                  ><i class="fa-solid fa-delete-left"></i
+                ></span>
+              </div>
+            </div>
+            <div
+              class="arrow element center-child-v"
+              onClick="sendArrows('up');"
+            >
+              <div class="center-child-h">
+                <span class="label"><i class="fa-solid fa-arrow-up"></i></span>
+              </div>
+            </div>
+            <div
+              class="arrow element center-child-v"
+              onClick="sendArrows('enter');"
+            >
+              <div class="center-child-h">
+                <span class="label"
+                  ><i class="fa-solid fa-arrow-turn-down fa-rotate-90"></i
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div class="arrow-row">
+            <div
+              class="arrow element center-child-v"
+              onClick="sendArrows('left');"
+            >
+              <div class="center-child-h">
+                <span class="label"
+                  ><i class="fa-solid fa-arrow-left"></i
+                ></span>
+              </div>
+            </div>
+            <div
+              class="arrow element center-child-v"
+              onClick="sendArrows('down');"
+            >
+              <div class="center-child-h">
+                <span class="label"
+                  ><i class="fa-solid fa-arrow-down"></i
+                ></span>
+              </div>
+            </div>
+            <div
+              class="arrow element center-child-v"
+              onClick="sendArrows('right');"
+            >
+              <div class="center-child-h">
+                <span class="label"
+                  ><i class="fa-solid fa-arrow-right"></i
+                ></span>
+              </div>
+            </div>
           </div>
         </div>
         <div id="touchpad">
@@ -200,7 +297,9 @@
               onClick="onClick('l');"
             >
               <div class="center-child-h">
-                <span class="label">TOUCHPAD</span>
+                <span class="label">
+                  <i class="fa-solid fa-computer-mouse fa-xl"></i>
+                </span>
               </div>
             </div>
           </div>
@@ -213,7 +312,9 @@
               ontouchend="release();"
             >
               <div class="center-child-h">
-                <span class="label">LEFT</span>
+                <span class="label">
+                  <i class="fa-regular fa-hand-pointer fa-xl fa-flip-horizontal"></i>
+                </span>
               </div>
             </div>
             <div
@@ -222,7 +323,9 @@
               onClick="onClick('r');"
             >
               <div class="center-child-h">
-                <span class="label">RIGHT</span>
+                <span class="label">
+                  <i class="fa-regular fa-hand-pointer fa-xl"></i>
+                </span>
               </div>
             </div>
             <div></div>
@@ -236,18 +339,30 @@
           ontouchmove="handleScroll(event);"
           ontouchend="endMove();"
         >
-        <span class="label rotate">SCROLL</span>
-      </div>
+          <span class="label">
+            <i class="fa-solid fa-arrow-right-arrow-left fa-rotate-90 fa-xl"></i>
+          </span>
+        </div>
       </div>
     </div>
     <div id="footer">
       <div id="footer-content">
-        <a class="link" href="https://github.com/frsouzaa" target="_blank" rel="noopener noreferrer">
-          <i class="fa-brands fa-github fa-2xl" style="color: #525150;"></i>
+        <a
+          class="link"
+          href="https://github.com/frsouzaa"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="fa-brands fa-github fa-2xl" style="color: #525150"></i>
           <p>github.com/frsouzaa</p>
         </a>
-        <a class="link" href="https://www.linkedin.com/in/frs15/" target="_blank" rel="noopener noreferrer">
-          <i class="fa-brands fa-linkedin-in fa-2xl" style="color: #525150;"></i>
+        <a
+          class="link"
+          href="https://www.linkedin.com/in/frs15/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="fa-brands fa-linkedin-in fa-2xl" style="color: #525150"></i>
           <p>linkedin.com/in/frs15/</p>
         </a>
       </div>
@@ -273,6 +388,16 @@
         return false;
       }
 
+      function sendArrows(arrow) {
+        const data = {
+          oper: "key",
+          data: {
+            key: arrow,
+          },
+        };
+        socket.send(JSON.stringify(data));
+      }
+
       function sendkeys(event) {
         fomatKeyboard();
         const data = {
@@ -283,7 +408,7 @@
         };
         socket.send(JSON.stringify(data));
       }
-      
+
       function fomatKeyboard() {
         const keyboard = document.getElementById("keyboard");
         keyboard.value = "";
