@@ -65,7 +65,7 @@
 
       #touchpad {
         width: 100%;
-        height: 45%;
+        height: 35%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -73,11 +73,10 @@
       }
 
       #main {
-        width: 85%;
+        width: 87%;
         height: 100%;
         display: flex;
         flex-direction: column;
-        /* justify-content: space-between; */
       }
 
       #scroll-container {
@@ -101,20 +100,19 @@
         padding: 0 1rem;
       }
 
-      #title,
-      #output {
+      #title {
         color: #bebcbb;
         margin: 1em 0;
       }
 
       #pad-div {
         width: 100%;
-        height: 75%;
+        height: 95%;
       }
 
       #left-right {
         width: 100%;
-        height: 20%;
+        height: 10%;
         justify-content: space-between;
       }
 
@@ -201,7 +199,6 @@
     </style>
   </head>
   <body>
-    <div id="output" style="color: red"></div>
     <div id="title-div" class="center-child-h">
       <h1 id="title">Remote PC Control</h1>
     </div>
@@ -293,7 +290,7 @@
               id="pad"
               class="element center-child-v"
               ontouchmove="move(event);"
-              ontouchend="endMove(); resetTouchpadStyle();"
+              ontouchend="endMove();"
               onClick="onClick('l');"
             >
               <div class="center-child-h">
@@ -303,33 +300,33 @@
               </div>
             </div>
           </div>
-          <div id="left-right" class="center-child-h">
-            <div></div>
-            <div
-              id="left"
-              class="element center-child-v"
-              ontouchstart="press();"
-              ontouchend="release();"
-            >
-              <div class="center-child-h">
-                <span class="label">
-                  <i class="fa-regular fa-hand-pointer fa-xl fa-flip-horizontal"></i>
-                </span>
-              </div>
+        </div>
+        <div id="left-right" class="center-child-h">
+          <div></div>
+          <div
+            id="left"
+            class="element center-child-v"
+            ontouchstart="press();"
+            ontouchend="release();"
+          >
+            <div class="center-child-h">
+              <span class="label">
+                <i class="fa-regular fa-hand-pointer fa-xl fa-flip-horizontal"></i>
+              </span>
             </div>
-            <div
-              id="right"
-              class="element center-child-v"
-              onClick="onClick('r');"
-            >
-              <div class="center-child-h">
-                <span class="label">
-                  <i class="fa-regular fa-hand-pointer fa-xl"></i>
-                </span>
-              </div>
-            </div>
-            <div></div>
           </div>
+          <div
+            id="right"
+            class="element center-child-v"
+            onClick="onClick('r');"
+          >
+            <div class="center-child-h">
+              <span class="label">
+                <i class="fa-regular fa-hand-pointer fa-xl"></i>
+              </span>
+            </div>
+          </div>
+          <div></div>
         </div>
       </div>
       <div id="scroll-container">
@@ -368,28 +365,29 @@
       </div>
     </div>
     <script>
-      const output = document.getElementById("output");
       const baseURL = "http://##URL##";
 
       const socket = new WebSocket("ws://##URL##/control");
 
-      // // Listen for messages
-      // socket.addEventListener("message", (event) => {
-      //   output.innerHTML = event.data;
-      // });
-
-      const touchpadElement = document.getElementById('pad');
+      const touchpadElement = document.getElementById('touchpad');
       const touchpadDefaultStyle = touchpadElement.style;
+      const keyboardElement = document.getElementById('keyboard-div');
+      const keyboardDefaultStyle = keyboardElement.style;
+      const arrowsElement = document.getElementById('arrows-div');
+      const arrowsDefaultStyle = arrowsElement.style;
+      const scrollElement = document.getElementById('scroll-container');
+      const scrollDefaultStyle = scrollElement.style;
+      const mainElement = document.getElementById('main');
+      const mainDefaultStyle = mainElement.style;
+      const pad = document.getElementById('pad');
+      const padDefaultStyle = pad.style;
+
+      const timeoutList = []
 
       const lastPosition = {
         x: 0,
         y: 0,
       };
-
-      function teste(event) {
-        output.innerHTML = event;
-        return false;
-      }
 
       function sendArrows(arrow) {
         const data = {
@@ -435,6 +433,12 @@
       function move(event) {
         event.preventDefault();
         makeTouchpadFullscreen();
+        
+        const timeoutListLength = timeoutList.length;
+
+        for (let i = 0; i < timeoutListLength; i++) {
+          clearTimeout(timeoutList.pop());
+        }
 
         const rect = pad.getBoundingClientRect();
         const len = event.touches.length;
@@ -460,17 +464,23 @@
           y - lastPosition.y > pixels ||
           y - lastPosition.y < -pixels
         ) {
+          const moveX = x - lastPosition.x
+          const moveY = y - lastPosition.y
           const data = {
             oper: "move",
             data: {
-              x: x - lastPosition.x,
-              y: y - lastPosition.y,
+              x: moveX * Math.abs(moveX),
+              y: moveY * Math.abs(moveY),
             },
           };
           lastPosition.x = x;
           lastPosition.y = y;
           socket.send(JSON.stringify(data));
         }
+        const timeoutId = setTimeout(() => {
+          resetTouchpadStyle();
+        }, 700);
+        timeoutList.push(timeoutId);
       }
 
       function handleScroll(event) {
@@ -518,16 +528,20 @@
 
       function resetTouchpadStyle() {
         touchpadElement.style = touchpadDefaultStyle;
+        keyboardElement.style = keyboardDefaultStyle;
+        arrowsElement.style = arrowsDefaultStyle;
+        scrollElement.style = scrollDefaultStyle;
+        mainElement.style = mainDefaultStyle;
+        pad.style = padDefaultStyle;
       }
 
       function makeTouchpadFullscreen() {
-        touchpadElement.style.zIndex = '9999';
-        touchpadElement.style.position = 'fixed';
-        touchpadElement.style.left = '0';
-        touchpadElement.style.top = '0';
-        touchpadElement.style.height = '100vh';
-        touchpadElement.style.width = '100vw';
-        touchpadElement.style.borderRadius = '0';
+        touchpadElement.style.height = '80%';
+        keyboardElement.style.display = 'none';
+        arrowsElement.style.display = 'none';
+        scrollElement.style.display = 'none';
+        mainElement.style.width = '100%';
+        pad.style.width = '95%';
       }
     </script>
   </body>
