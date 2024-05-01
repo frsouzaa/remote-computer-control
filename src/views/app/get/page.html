@@ -293,7 +293,7 @@
               id="pad"
               class="element center-child-v"
               ontouchmove="move(event);"
-              ontouchend="endMove();"
+              ontouchend="endMove(); resetTouchpadStyle();"
               onClick="onClick('l');"
             >
               <div class="center-child-h">
@@ -378,6 +378,9 @@
       //   output.innerHTML = event.data;
       // });
 
+      const touchpadElement = document.getElementById('pad');
+      const touchpadDefaultStyle = touchpadElement.style;
+
       const lastPosition = {
         x: 0,
         y: 0,
@@ -431,6 +434,7 @@
 
       function move(event) {
         event.preventDefault();
+        makeTouchpadFullscreen();
 
         const rect = pad.getBoundingClientRect();
         const len = event.touches.length;
@@ -510,6 +514,20 @@
           data: {},
         };
         socket.send(JSON.stringify(data));
+      }
+
+      function resetTouchpadStyle() {
+        touchpadElement.style = touchpadDefaultStyle;
+      }
+
+      function makeTouchpadFullscreen() {
+        touchpadElement.style.zIndex = '9999';
+        touchpadElement.style.position = 'fixed';
+        touchpadElement.style.left = '0';
+        touchpadElement.style.top = '0';
+        touchpadElement.style.height = '100vh';
+        touchpadElement.style.width = '100vw';
+        touchpadElement.style.borderRadius = '0';
       }
     </script>
   </body>
