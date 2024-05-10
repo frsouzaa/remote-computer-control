@@ -81,7 +81,7 @@
 
       #scroll-container {
         height: 100%;
-        width: 15%;
+        width: 13%;
         display: flex;
         justify-content: center;
       }
@@ -107,7 +107,8 @@
 
       #pad-div {
         width: 100%;
-        height: 95%;
+        height: 100%;
+        padding-bottom: 0.5rem;
       }
 
       #left-right {
@@ -346,7 +347,6 @@
         </div>
       </div>
     </div>
-    <div id="teste"></div>
     <div id="footer">
       <div id="footer-content">
         <a
@@ -386,6 +386,8 @@
       const mainDefaultStyle = mainElement.style;
       const pad = document.getElementById("pad");
       const padDefaultStyle = pad.style;
+      const leftRight = document.getElementById("left-right");
+      const leftRightDefaultStyle = leftRight.style;
 
       const timeoutList = [];
 
@@ -554,6 +556,7 @@
         scrollElement.style = scrollDefaultStyle;
         mainElement.style = mainDefaultStyle;
         pad.style = padDefaultStyle;
+        leftRight.style = leftRightDefaultStyle;
       }
 
       function makeTouchpadFullscreen() {
@@ -563,6 +566,7 @@
         scrollElement.style.display = "none";
         mainElement.style.width = "100%";
         pad.style.width = "95%";
+        leftRight.style.width = "87%";
       }
     </script>
   </body>
