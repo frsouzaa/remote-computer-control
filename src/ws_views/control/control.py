@@ -10,13 +10,11 @@ class Control():
 
     def handle_request(self, input: Any) -> Tuple[Dict[str, any], int]:
         input = json.loads(input)
-        oper: Dict[str, any] = input.get("oper")
+        oper: str = input.get("oper")
         data: Dict[str, any] = input.get("data")
         if oper == "move":
             try:
-                x_raw_mov = data.get("x")
-                y_raw_mov = data.get("y")
-                mouse.move(x_raw_mov, y_raw_mov, absolute=False)
+                mouse.move(data.get("x"), data.get("y"), absolute=False)
                 return {"status": 200, "msg": "Sucesso"}
             except Exception as e:
                 return {"status": 500, "msg": "Erro"}

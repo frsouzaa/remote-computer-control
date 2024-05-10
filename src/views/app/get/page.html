@@ -466,11 +466,13 @@
         ) {
           const moveX = x - lastPosition.x
           const moveY = y - lastPosition.y
+          const absX = Math.abs(moveX)
+          const absY = Math.abs(moveY)
           const data = {
             oper: "move",
             data: {
-              x: moveX * Math.abs(moveX),
-              y: moveY * Math.abs(moveY),
+              x: absX < 5 ? moveX * absX : moveX * 5,
+              y: absY < 5 ? moveY * absY : moveY * 5,
             },
           };
           lastPosition.x = x;
