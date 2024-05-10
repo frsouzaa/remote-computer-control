@@ -311,7 +311,9 @@
           >
             <div class="center-child-h">
               <span class="label">
-                <i class="fa-regular fa-hand-pointer fa-xl fa-flip-horizontal"></i>
+                <i
+                  class="fa-regular fa-hand-pointer fa-xl fa-flip-horizontal"
+                ></i>
               </span>
             </div>
           </div>
@@ -337,11 +339,14 @@
           ontouchend="endMove();"
         >
           <span class="label">
-            <i class="fa-solid fa-arrow-right-arrow-left fa-rotate-90 fa-xl"></i>
+            <i
+              class="fa-solid fa-arrow-right-arrow-left fa-rotate-90 fa-xl"
+            ></i>
           </span>
         </div>
       </div>
     </div>
+    <div id="teste"></div>
     <div id="footer">
       <div id="footer-content">
         <a
@@ -367,27 +372,41 @@
     <script>
       const baseURL = "http://##URL##";
 
-      const socket = new WebSocket("ws://##URL##/control");
+      let socket = new WebSocket("ws://##URL##/control");
 
-      const touchpadElement = document.getElementById('touchpad');
+      const touchpadElement = document.getElementById("touchpad");
       const touchpadDefaultStyle = touchpadElement.style;
-      const keyboardElement = document.getElementById('keyboard-div');
+      const keyboardElement = document.getElementById("keyboard-div");
       const keyboardDefaultStyle = keyboardElement.style;
-      const arrowsElement = document.getElementById('arrows-div');
+      const arrowsElement = document.getElementById("arrows-div");
       const arrowsDefaultStyle = arrowsElement.style;
-      const scrollElement = document.getElementById('scroll-container');
+      const scrollElement = document.getElementById("scroll-container");
       const scrollDefaultStyle = scrollElement.style;
-      const mainElement = document.getElementById('main');
+      const mainElement = document.getElementById("main");
       const mainDefaultStyle = mainElement.style;
-      const pad = document.getElementById('pad');
+      const pad = document.getElementById("pad");
       const padDefaultStyle = pad.style;
 
-      const timeoutList = []
+      const timeoutList = [];
 
       const lastPosition = {
         x: 0,
         y: 0,
       };
+
+      function socketSend(data) {
+        if (socket.readyState === 1) {
+          socket.send(JSON.stringify(data));
+          return;
+        }
+        if (socket.readyState === 0) {
+          return;
+        }
+        socket = new WebSocket("ws://##URL##/control");
+        socket.onopen = function() {
+          socket.send(JSON.stringify(data));
+        };
+      }
 
       function sendArrows(arrow) {
         const data = {
@@ -396,7 +415,7 @@
             key: arrow,
           },
         };
-        socket.send(JSON.stringify(data));
+        socketSend(data)
       }
 
       function sendkeys(event) {
@@ -407,7 +426,7 @@
             key: event.data,
           },
         };
-        socket.send(JSON.stringify(data));
+        socketSend(data)
       }
 
       function fomatKeyboard() {
@@ -422,7 +441,7 @@
             side: side,
           },
         };
-        socket.send(JSON.stringify(data));
+        socketSend(data);
       }
 
       function endMove() {
@@ -433,7 +452,7 @@
       function move(event) {
         event.preventDefault();
         makeTouchpadFullscreen();
-        
+
         const timeoutListLength = timeoutList.length;
 
         for (let i = 0; i < timeoutListLength; i++) {
@@ -464,10 +483,10 @@
           y - lastPosition.y > pixels ||
           y - lastPosition.y < -pixels
         ) {
-          const moveX = x - lastPosition.x
-          const moveY = y - lastPosition.y
-          const absX = Math.abs(moveX)
-          const absY = Math.abs(moveY)
+          const moveX = x - lastPosition.x;
+          const moveY = y - lastPosition.y;
+          const absX = Math.abs(moveX);
+          const absY = Math.abs(moveY);
           const data = {
             oper: "move",
             data: {
@@ -477,7 +496,7 @@
           };
           lastPosition.x = x;
           lastPosition.y = y;
-          socket.send(JSON.stringify(data));
+          socketSend(data);
         }
         const timeoutId = setTimeout(() => {
           resetTouchpadStyle();
@@ -508,7 +527,7 @@
             },
           };
           lastPosition.y = y;
-          socket.send(JSON.stringify(data));
+          socketSend(data);
         }
       }
 
@@ -517,7 +536,7 @@
           oper: "mouse_down",
           data: {},
         };
-        socket.send(JSON.stringify(data));
+        socketSend(data);
       }
 
       function release() {
@@ -525,7 +544,7 @@
           oper: "mouse_up",
           data: {},
         };
-        socket.send(JSON.stringify(data));
+        socketSend(data);
       }
 
       function resetTouchpadStyle() {
@@ -538,12 +557,12 @@
       }
 
       function makeTouchpadFullscreen() {
-        touchpadElement.style.height = '80%';
-        keyboardElement.style.display = 'none';
-        arrowsElement.style.display = 'none';
-        scrollElement.style.display = 'none';
-        mainElement.style.width = '100%';
-        pad.style.width = '95%';
+        touchpadElement.style.height = "80%";
+        keyboardElement.style.display = "none";
+        arrowsElement.style.display = "none";
+        scrollElement.style.display = "none";
+        mainElement.style.width = "100%";
+        pad.style.width = "95%";
       }
     </script>
   </body>
